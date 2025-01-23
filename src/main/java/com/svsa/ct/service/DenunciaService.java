@@ -2,18 +2,18 @@ package com.svsa.ct.service;
 
 import com.svsa.ct.dto.DenunciaRecordDto;
 import com.svsa.ct.model.Denuncia;
-import com.svsa.ct.model.Pessoa;
+
 import com.svsa.ct.model.enums.AgenteViolador;
-import com.svsa.ct.model.enums.DireitoViolado;
+
 import com.svsa.ct.model.enums.OrigemDenuncia;
 import com.svsa.ct.model.enums.StatusRD;
 import com.svsa.ct.repository.DenunciaRepository;
-import com.svsa.ct.repository.PessoaRepository;
+
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
+
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -22,8 +22,7 @@ import java.util.List;
 public class DenunciaService {
     @Autowired
     private DenunciaRepository denunciaRepository;
-    @Autowired
-    private PessoaRepository pessoaRepository;
+
 
     @Transactional
     public Denuncia saveDenuncia(DenunciaRecordDto denunciaRecordDto) {
