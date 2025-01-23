@@ -28,13 +28,14 @@ public class Usuario implements Serializable, UserDetails {
     private String email;
     private String senha;
 
+    @Enumerated(EnumType.STRING)
     private Role role;
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.role == Role.COORDENADORES) return List.of(new SimpleGrantedAuthority("COORDENADOR"));
-        else return List.of(new SimpleGrantedAuthority("USER"));
+        if(this.role == Role.COORDENADORES) return List.of(new SimpleGrantedAuthority("ROLE_COORDENADORES"));
+        else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override
