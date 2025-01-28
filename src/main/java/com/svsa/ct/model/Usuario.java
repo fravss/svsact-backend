@@ -31,6 +31,10 @@ public class Usuario implements Serializable, UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @ManyToOne
+    @JoinColumn(name = "unidade_id")
+    private Unidade unidade;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

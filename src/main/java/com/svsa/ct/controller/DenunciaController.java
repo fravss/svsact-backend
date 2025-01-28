@@ -21,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/denuncia")
-public class DenunciaBean {
+public class DenunciaController {
     @Autowired //inject
     DenunciaService denunciaService;
 
