@@ -1,6 +1,8 @@
 package com.svsa.ct.controller;
 
-import com.svsa.ct.dto.DenunciaRecordDto;
+import com.svsa.ct.dto.DenunciaDtos.AtualizarDenunciaRecordDto;
+import com.svsa.ct.dto.DenunciaDtos.CriarDenunciaRecordDto;
+import com.svsa.ct.dto.DenunciaDtos.RespostaDenunciaRecordDto;
 import com.svsa.ct.model.Denuncia;
 import com.svsa.ct.model.Usuario;
 import com.svsa.ct.model.enums.AgenteViolador;
@@ -12,8 +14,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,14 +27,24 @@ public class DenunciaBean {
 
 
     @PostMapping
-    public ResponseEntity<Denuncia> saveDenuncia(@RequestBody @Valid DenunciaRecordDto denunciaRecordDto) {
+    public ResponseEntity<RespostaDenunciaRecordDto> saveDenuncia(@RequestBody @Valid CriarDenunciaRecordDto denunciaRecordDto) {
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.status(HttpStatus.CREATED).body(denunciaService.saveDenuncia(denunciaRecordDto, usuario));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<RespostaDenunciaRecordDto> getDenunciaById(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(denunciaService.buscarDenuncia(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<RespostaDenunciaRecordDto> atualizarDenuncia(@RequestBody @Valid AtualizarDenunciaRecordDto denunciaRecordDto, @PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(denunciaService.atualizarDenuncia(denunciaRecordDto, id));
+    }
+
 
     @GetMapping
-    public ResponseEntity<List<Denuncia>> getDenunciasBooks() {
+    public ResponseEntity<List<Denuncia>> getDenuncias() {
         return ResponseEntity.status(HttpStatus.OK).body(denunciaService.buscarDenuncias());
     }
 

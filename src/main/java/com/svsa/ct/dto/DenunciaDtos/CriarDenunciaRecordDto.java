@@ -1,12 +1,12 @@
-package com.svsa.ct.dto;
+package com.svsa.ct.dto.DenunciaDtos;
 
-import com.svsa.ct.model.enums.DireitoViolado;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.Date;
 
-public record DenunciaRecordDto(@NotNull Date dataEmissao,
+public record CriarDenunciaRecordDto(
+                                @NotNull Date dataEmissao,
                                 String relato,
                                 String responsaveis,
                                 String criancasAdolescentes,
