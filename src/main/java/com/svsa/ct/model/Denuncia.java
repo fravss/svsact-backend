@@ -23,19 +23,21 @@ public class Denuncia implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @ManyToOne
+    @JoinColumn(name = "conselheiro_id")
+    private Usuario conselheiro;
+
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataEmissao;
+
     private String relato;
 
-    @ElementCollection(targetClass = DireitoViolado.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "DireitosViolados", joinColumns = @JoinColumn(name = "codigo_denuncia"))
-    @Column(name = "direito", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private List<DireitoViolado> direitosViolados;
+    private String responsaveis;
 
-    @Enumerated(EnumType.STRING)
-    private AgenteViolador agenteViolador;
+    private String criancasAdolescentes;
+
+    private String medidasAplicadas;
 
     @Enumerated(EnumType.STRING)
     private OrigemDenuncia origemDenuncia;
@@ -43,18 +45,7 @@ public class Denuncia implements Serializable {
     @Enumerated(EnumType.STRING)
     private StatusRD statusRD;
 
-    @ManyToOne
-    @JoinColumn(name = "conselheiro_id")
-    private Usuario conselheiro;
 
-    @ManyToOne
-    @JoinColumn(name = "conselheiroref_id")
-    private Usuario conselheiroReferencia;
-
-
-    @ManyToOne
-    @JoinColumn(name = "pessoa_id")
-    private Pessoa pessoa;
 
 
 

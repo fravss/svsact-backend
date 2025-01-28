@@ -7,9 +7,11 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Date;
 
 public record DenunciaRecordDto(@NotNull Date dataEmissao,
-                                @NotBlank String relato,
+                                String relato,
+                                String responsaveis,
+                                String criancasAdolescentes,
+                                String medidasAplicadas,
                                 @NotBlank String origemDenuncia,
-                                @NotBlank String statusRD,
-                                @NotBlank String agenteViolador,
-                                @NotNull  DireitoViolado[] direitosViolados) {
+                                @NotBlank String statusRD
+                              ) {
 }
