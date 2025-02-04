@@ -1,4 +1,6 @@
 package com.svsa.ct.dto.AutenticacaoDtos;
 
-public record LoginDto(String email, String senha) {
+import jakarta.validation.constraints.NotNull;
+
+public record LoginDto(@NotNull String email, @NotNull String senha) {
 }
