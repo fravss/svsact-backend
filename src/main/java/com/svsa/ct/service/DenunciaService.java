@@ -1,9 +1,9 @@
 package com.svsa.ct.service;
 
-import com.svsa.ct.dto.DenunciaDtos.AtualizarDenunciaRecordDto;
-import com.svsa.ct.dto.DenunciaDtos.CriarDenunciaRecordDto;
-import com.svsa.ct.dto.DenunciaDtos.RespostaDenunciaRecordDto;
-import com.svsa.ct.dto.UsuarioDtos.UsuarioRecordDto;
+import com.svsa.ct.dtos.denunciaDtos.AtualizarDenunciaRecordDto;
+import com.svsa.ct.dtos.denunciaDtos.CriarDenunciaRecordDto;
+import com.svsa.ct.dtos.denunciaDtos.RespostaDenunciaRecordDto;
+import com.svsa.ct.dtos.usuarioDtos.UsuarioRecordDto;
 import com.svsa.ct.model.Denuncia;
 
 import com.svsa.ct.model.Usuario;

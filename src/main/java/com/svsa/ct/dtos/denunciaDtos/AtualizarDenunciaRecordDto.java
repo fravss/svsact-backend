@@ -1,4 +1,4 @@
-package com.svsa.ct.dto.DenunciaDtos;
+package com.svsa.ct.dtos.denunciaDtos;
 
 import java.util.Date;
 

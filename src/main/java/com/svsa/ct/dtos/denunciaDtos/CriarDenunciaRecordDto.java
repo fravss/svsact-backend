@@ -1,4 +1,4 @@
-package com.svsa.ct.dto.DenunciaDtos;
+package com.svsa.ct.dtos.denunciaDtos;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

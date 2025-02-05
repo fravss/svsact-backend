@@ -1,7 +1,7 @@
 package com.svsa.ct.controller;
 
-import com.svsa.ct.dto.AutenticacaoDtos.LoginDto;
-import com.svsa.ct.dto.AutenticacaoDtos.RespostaLoginDto;
+import com.svsa.ct.dtos.autenticacaoDtos.LoginDto;
+import com.svsa.ct.dtos.autenticacaoDtos.RespostaLoginDto;
 
 import com.svsa.ct.infra.security.TokenService;
 import com.svsa.ct.model.Usuario;

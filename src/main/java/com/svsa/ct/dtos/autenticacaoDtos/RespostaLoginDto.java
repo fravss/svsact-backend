@@ -1,4 +1,4 @@
-package com.svsa.ct.dto.AutenticacaoDtos;
+package com.svsa.ct.dtos.autenticacaoDtos;
 
 public record RespostaLoginDto(String token) {
 }

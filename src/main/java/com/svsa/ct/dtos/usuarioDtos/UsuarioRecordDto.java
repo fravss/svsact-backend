@@ -1,6 +1,4 @@
-package com.svsa.ct.dto.UsuarioDtos;
-
-import com.svsa.ct.model.enums.Role;
+package com.svsa.ct.dtos.usuarioDtos;
 
 public record UsuarioRecordDto(Long id,
                                String name,

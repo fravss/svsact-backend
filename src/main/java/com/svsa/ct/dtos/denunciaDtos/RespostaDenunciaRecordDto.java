@@ -1,6 +1,6 @@
-package com.svsa.ct.dto.DenunciaDtos;
+package com.svsa.ct.dtos.denunciaDtos;
 
-import com.svsa.ct.dto.UsuarioDtos.UsuarioRecordDto;
+import com.svsa.ct.dtos.usuarioDtos.UsuarioRecordDto;
 
 import java.util.Date;
 
