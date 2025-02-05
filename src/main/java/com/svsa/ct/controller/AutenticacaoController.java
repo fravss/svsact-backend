@@ -1,7 +1,7 @@
 package com.svsa.ct.controller;
 
-import com.svsa.ct.dtos.autenticacaoDtos.LoginDto;
-import com.svsa.ct.dtos.autenticacaoDtos.RespostaLoginDto;
+import com.svsa.ct.dtos.autenticacaoDtos.RequestLoginDto;
+import com.svsa.ct.dtos.autenticacaoDtos.ResponseLoginDto;
 
 import com.svsa.ct.infra.security.TokenService;
 import com.svsa.ct.model.Usuario;
@@ -25,10 +25,10 @@ public class AutenticacaoController {
     private TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity autenticar(@RequestBody @Valid LoginDto autenticacaoDto) {
+    public ResponseEntity autenticar(@RequestBody @Valid RequestLoginDto autenticacaoDto) {
         var senhaDoUsuario = new UsernamePasswordAuthenticationToken(autenticacaoDto.email(), autenticacaoDto.senha());
         var auth = this.authenticationManager.authenticate(senhaDoUsuario);
         var token = tokenService.generateToken((Usuario) auth.getPrincipal());
-        return ResponseEntity.ok(new RespostaLoginDto(token));
+        return ResponseEntity.ok(new ResponseLoginDto(token));
     }
 }

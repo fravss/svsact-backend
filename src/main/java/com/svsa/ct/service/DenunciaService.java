@@ -1,8 +1,7 @@
 package com.svsa.ct.service;
 
-import com.svsa.ct.dtos.denunciaDtos.AtualizarDenunciaRecordDto;
-import com.svsa.ct.dtos.denunciaDtos.CriarDenunciaRecordDto;
-import com.svsa.ct.dtos.denunciaDtos.RespostaDenunciaRecordDto;
+import com.svsa.ct.dtos.denunciaDtos.RequestDenunciaDto;
+import com.svsa.ct.dtos.denunciaDtos.ResponseDenunciaDto;
 import com.svsa.ct.dtos.usuarioDtos.UsuarioRecordDto;
 import com.svsa.ct.model.Denuncia;
 
@@ -26,7 +25,7 @@ public class DenunciaService {
 
 
     @Transactional
-    public RespostaDenunciaRecordDto saveDenuncia(CriarDenunciaRecordDto denunciaRecordDto, Usuario usuario) {
+    public ResponseDenunciaDto saveDenuncia(RequestDenunciaDto denunciaRecordDto, Usuario usuario) {
         System.out.println(denunciaRecordDto);
 
         Denuncia denuncia = new Denuncia();
@@ -42,7 +41,7 @@ public class DenunciaService {
         denuncia.setMedidasAplicadas(denunciaRecordDto.medidasAplicadas());
 
         Denuncia denunciaSalva = denunciaRepository.save(denuncia);
-        return new RespostaDenunciaRecordDto(
+        return new ResponseDenunciaDto(
                 denunciaSalva.getId(),
                 new UsuarioRecordDto(denunciaSalva.getConselheiro().getId(), denunciaSalva.getConselheiro().getNome(), denunciaSalva.getConselheiro().getEmail()),
                 denunciaSalva.getDataEmissao(),
@@ -59,9 +58,9 @@ public class DenunciaService {
         return denunciaRepository.findAll();
     }
 
-    public RespostaDenunciaRecordDto buscarDenuncia(Long id) {
+    public ResponseDenunciaDto buscarDenuncia(Long id) {
         Denuncia denuncia = denunciaRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        return new RespostaDenunciaRecordDto(
+        return new ResponseDenunciaDto(
                 denuncia.getId(),
                 new UsuarioRecordDto(denuncia.getConselheiro().getId(), denuncia.getConselheiro().getNome(), denuncia.getConselheiro().getEmail()),
                 denuncia.getDataEmissao(),
@@ -80,7 +79,7 @@ public class DenunciaService {
     }
 
     @Transactional
-    public RespostaDenunciaRecordDto atualizarDenuncia(AtualizarDenunciaRecordDto denunciaRecordDto, Long id) {
+    public ResponseDenunciaDto atualizarDenuncia(RequestDenunciaDto denunciaRecordDto, Long id) {
         Denuncia denuncia = denunciaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Denúncia não encontrada"));
 
@@ -93,7 +92,7 @@ public class DenunciaService {
         denuncia.setMedidasAplicadas(denunciaRecordDto.medidasAplicadas());
 
         Denuncia denunciaSalva = denunciaRepository.save(denuncia);
-        return new RespostaDenunciaRecordDto(
+        return new ResponseDenunciaDto(
                 denunciaSalva.getId(),
                 new UsuarioRecordDto(denunciaSalva.getConselheiro().getId(), denunciaSalva.getConselheiro().getNome(), denunciaSalva.getConselheiro().getEmail()),
                 denunciaSalva.getDataEmissao(),

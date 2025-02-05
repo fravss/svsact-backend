@@ -1,8 +1,7 @@
 package com.svsa.ct.controller;
 
-import com.svsa.ct.dtos.denunciaDtos.AtualizarDenunciaRecordDto;
-import com.svsa.ct.dtos.denunciaDtos.CriarDenunciaRecordDto;
-import com.svsa.ct.dtos.denunciaDtos.RespostaDenunciaRecordDto;
+import com.svsa.ct.dtos.denunciaDtos.RequestDenunciaDto;
+import com.svsa.ct.dtos.denunciaDtos.ResponseDenunciaDto;
 import com.svsa.ct.model.Denuncia;
 import com.svsa.ct.model.Usuario;
 import com.svsa.ct.model.enums.AgenteViolador;
@@ -27,18 +26,18 @@ public class DenunciaController {
 
 
     @PostMapping
-    public ResponseEntity<RespostaDenunciaRecordDto> saveDenuncia(@RequestBody @Valid CriarDenunciaRecordDto denunciaRecordDto) {
+    public ResponseEntity<ResponseDenunciaDto> saveDenuncia(@RequestBody @Valid RequestDenunciaDto denunciaRecordDto) {
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.status(HttpStatus.CREATED).body(denunciaService.saveDenuncia(denunciaRecordDto, usuario));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RespostaDenunciaRecordDto> getDenunciaById(@PathVariable Long id) {
+    public ResponseEntity<ResponseDenunciaDto> getDenunciaById(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(denunciaService.buscarDenuncia(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RespostaDenunciaRecordDto> atualizarDenuncia(@RequestBody @Valid AtualizarDenunciaRecordDto denunciaRecordDto, @PathVariable Long id) {
+    public ResponseEntity<ResponseDenunciaDto> atualizarDenuncia(@RequestBody @Valid RequestDenunciaDto denunciaRecordDto, @PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.CREATED).body(denunciaService.atualizarDenuncia(denunciaRecordDto, id));
     }
 
