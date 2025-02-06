@@ -64,11 +64,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
         if (body == null) {
             body = ExceptionMessage.builder()
-                    .mensagem(ex.getMessage())
+                    .message(ex.getMessage())
                     .build();
         } else if (body instanceof String) {
             body = ExceptionMessage.builder()
-                    .mensagem((String) body)
+                    .message((String) body)
                     .build();
         }
         return super.handleExceptionInternal(ex, body, headers, statusCode, request);
