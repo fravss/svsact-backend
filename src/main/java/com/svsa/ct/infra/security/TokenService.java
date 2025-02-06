@@ -5,7 +5,9 @@ import com.auth0.jwt.algorithms.Algorithm;
 
 import com.svsa.ct.model.Usuario;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -19,21 +21,31 @@ public class TokenService {
 
     public String generateToken(Usuario usuario){
             Algorithm algoritmo = Algorithm.HMAC256(secret);
-            return JWT.create()
-                    .withIssuer("svsact-api")
-                    .withSubject(usuario.getEmail())
-                    .withExpiresAt(genExpirationDate())
-                    .sign(algoritmo);
+
+            try {
+                return JWT.create()
+                        .withIssuer("svsact-api")
+                        .withSubject(usuario.getEmail())
+                        .withExpiresAt(genExpirationDate())
+                        .sign(algoritmo);
+            } catch (Exception e) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao gerar token");
+            }
     }
 
     public String validateToken(String token){
 
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            return JWT.require(algorithm)
-                    .withIssuer("svsact-api")
-                    .build()
-                    .verify(token)
-                    .getSubject();
+            try{
+                return JWT.require(algorithm)
+                        .withIssuer("svsact-api")
+                        .build()
+                        .verify(token)
+                        .getSubject();
+            } catch (Exception e) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Erro ao tentar validar token");
+            }
+
     }
 
     private Instant genExpirationDate(){
