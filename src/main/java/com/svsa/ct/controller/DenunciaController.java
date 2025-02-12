@@ -23,7 +23,7 @@ public class DenunciaController {
     @Autowired //inject
     DenunciaService denunciaService;
 
-
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public ResponseEntity<Denuncia> saveDenuncia(@RequestBody @Valid RequestDenunciaDto denunciaRecordDto) {
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -44,7 +44,9 @@ public class DenunciaController {
         Denuncia denuncia = denunciaService.atualizarDenuncia(denunciaRecordDto, id);
         denuncia.getConselheiro().setSenha(null);
         return ResponseEntity.status(HttpStatus.CREATED).body(denuncia);
+
     }
+
 
 
     @GetMapping
@@ -55,9 +57,9 @@ public class DenunciaController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteDenuncia(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteDenuncia(@PathVariable Long id) {
         denunciaService.apagarDenuncia(id);
-        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/origem-denuncia")
