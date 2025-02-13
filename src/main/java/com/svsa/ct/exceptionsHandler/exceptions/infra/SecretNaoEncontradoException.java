@@ -1,4 +1,4 @@
-package com.svsa.ct.exceptionsHandler.exceptions;
+package com.svsa.ct.exceptionsHandler.exceptions.infra;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 

@@ -3,12 +3,10 @@ package com.svsa.ct.infra.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 
-import com.svsa.ct.exceptionsHandler.exceptions.SecretNaoEncontradoException;
+import com.svsa.ct.exceptionsHandler.exceptions.infra.SecretNaoEncontradoException;
 import com.svsa.ct.model.Usuario;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

@@ -3,14 +3,13 @@ package com.svsa.ct.controller;
 import com.svsa.ct.dtos.autenticacaoDtos.RequestLoginDto;
 import com.svsa.ct.dtos.autenticacaoDtos.ResponseLoginDto;
 
-import com.svsa.ct.exceptionsHandler.exceptions.UsuarioNaoEncontradoException;
 import com.svsa.ct.infra.security.TokenService;
 import com.svsa.ct.model.Usuario;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 public class AutenticacaoController {
@@ -32,6 +32,7 @@ public class AutenticacaoController {
             var senhaDoUsuario = new UsernamePasswordAuthenticationToken(autenticacaoDto.email(), autenticacaoDto.senha());
             var auth = this.authenticationManager.authenticate(senhaDoUsuario);
             var token = tokenService.generateToken((Usuario) auth.getPrincipal());
+            log.info("Token gerado com sucesso: {}", token);
             return ResponseEntity.ok(new ResponseLoginDto(token));
 
     }

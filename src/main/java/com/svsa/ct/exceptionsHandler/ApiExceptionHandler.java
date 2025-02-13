@@ -4,10 +4,10 @@ package com.svsa.ct.exceptionsHandler;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
-import com.svsa.ct.exceptionsHandler.exceptions.EntidadeNaoEncontradaException;
-import com.svsa.ct.exceptionsHandler.exceptions.SecretNaoEncontradoException;
-import com.svsa.ct.exceptionsHandler.exceptions.TokenNaoEncontradoException;
-import com.svsa.ct.exceptionsHandler.exceptions.UsuarioNaoEncontradoException;
+import com.svsa.ct.exceptionsHandler.exceptions.service.EntidadeNaoEncontradaException;
+import com.svsa.ct.exceptionsHandler.exceptions.infra.SecretNaoEncontradoException;
+import com.svsa.ct.exceptionsHandler.exceptions.infra.TokenNaoEncontradoException;
+import com.svsa.ct.exceptionsHandler.exceptions.service.UsuarioNaoEncontradoException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,10 +24,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -136,11 +134,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 
 
-    @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<?> ResponseStatusExceptionHandler(ResponseStatusException exception, WebRequest request){
-        return handleExceptionInternal(exception, exception.getReason(),  new HttpHeaders(),
-                exception.getStatusCode(), request);
-    }
+
 
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
     public ResponseEntity<?> EntidadeNaoEncontradaExceptionHandler(EntidadeNaoEncontradaException exception, WebRequest request){
@@ -172,14 +166,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 
         return super.handleExceptionInternal(ex, body, headers, statusCode, request);
-    }
-    private ExceptionMessage.ExceptionMessageBuilder createProblemBuilder(HttpStatus status,
-                                                        String errorClass, String message) {
-
-        return ExceptionMessage.builder()
-                .httpCode(status.value())
-                .errorClass(errorClass)
-                .message(message);
     }
 
     private String joinPath(List<Reference> references) {

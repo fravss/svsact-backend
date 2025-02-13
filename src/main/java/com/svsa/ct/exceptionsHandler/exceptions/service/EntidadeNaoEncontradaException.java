@@ -1,4 +1,4 @@
-package com.svsa.ct.exceptionsHandler.exceptions;
+package com.svsa.ct.exceptionsHandler.exceptions.service;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

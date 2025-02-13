@@ -3,7 +3,7 @@ package com.svsa.ct.service;
 import com.svsa.ct.dtos.denunciaDtos.RequestDenunciaDto;
 
 
-import com.svsa.ct.exceptionsHandler.exceptions.DenunciaNaoEncontradaException;
+import com.svsa.ct.exceptionsHandler.exceptions.service.DenunciaNaoEncontradaException;
 
 import com.svsa.ct.model.Denuncia;
 

@@ -1,4 +1,5 @@
-package com.svsa.ct.exceptionsHandler.exceptions;
+package com.svsa.ct.exceptionsHandler.exceptions.service;
+
 import java.io.Serial;
 
 
