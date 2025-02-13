@@ -28,17 +28,11 @@ public class AutenticacaoController {
 
     @PostMapping("/login")
     public ResponseEntity autenticar(@RequestBody @Valid RequestLoginDto autenticacaoDto) {
-        try {
+
             var senhaDoUsuario = new UsernamePasswordAuthenticationToken(autenticacaoDto.email(), autenticacaoDto.senha());
             var auth = this.authenticationManager.authenticate(senhaDoUsuario);
             var token = tokenService.generateToken((Usuario) auth.getPrincipal());
             return ResponseEntity.ok(new ResponseLoginDto(token));
-        } catch(InternalAuthenticationServiceException e) {
-            if(e.getCause() instanceof UsuarioNaoEncontradoException) {
-                throw new UsuarioNaoEncontradoException(e.getMessage());
-            }
-            throw e;
-        }
 
     }
 }

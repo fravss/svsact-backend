@@ -1,5 +1,6 @@
 package com.svsa.ct.infra.security;
 
+import com.svsa.ct.exceptionsHandler.exceptions.TokenNaoEncontradoException;
 import com.svsa.ct.repository.UsuarioRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -43,10 +44,10 @@ public class SecurityFilter extends OncePerRequestFilter {
                   return;
               }
               var token = this.recoverToken(request);
+               if (token == null) {
+                   throw new TokenNaoEncontradoException();
+               }
 
-              if (token == null) {
-                  throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token não encontrado na requisição");
-              }
               var login = tokenService.validateToken(token);
               UserDetails user = userRepository.findByEmail(login);
 
