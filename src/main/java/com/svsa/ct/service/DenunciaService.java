@@ -1,9 +1,10 @@
 package com.svsa.ct.service;
 
-import com.svsa.ct.dto.DenunciaDtos.AtualizarDenunciaRecordDto;
-import com.svsa.ct.dto.DenunciaDtos.CriarDenunciaRecordDto;
-import com.svsa.ct.dto.DenunciaDtos.RespostaDenunciaRecordDto;
-import com.svsa.ct.dto.UsuarioDtos.UsuarioRecordDto;
+import com.svsa.ct.dtos.denunciaDtos.RequestDenunciaDto;
+
+
+import com.svsa.ct.exceptionsHandler.exceptions.service.DenunciaNaoEncontradaException;
+
 import com.svsa.ct.model.Denuncia;
 
 import com.svsa.ct.model.Usuario;
@@ -12,7 +13,6 @@ import com.svsa.ct.model.enums.OrigemDenuncia;
 import com.svsa.ct.model.enums.StatusRD;
 import com.svsa.ct.repository.DenunciaRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,11 +26,8 @@ public class DenunciaService {
 
 
     @Transactional
-    public RespostaDenunciaRecordDto saveDenuncia(CriarDenunciaRecordDto denunciaRecordDto, Usuario usuario) {
-        System.out.println(denunciaRecordDto);
-
+    public Denuncia saveDenuncia(RequestDenunciaDto denunciaRecordDto, Usuario usuario) {
         Denuncia denuncia = new Denuncia();
-
 
         denuncia.setDataEmissao(denunciaRecordDto.dataEmissao());
         denuncia.setConselheiro(usuario);
@@ -41,48 +38,33 @@ public class DenunciaService {
         denuncia.setCriancasAdolescentes(denunciaRecordDto.criancasAdolescentes());
         denuncia.setMedidasAplicadas(denunciaRecordDto.medidasAplicadas());
 
-        Denuncia denunciaSalva = denunciaRepository.save(denuncia);
-        return new RespostaDenunciaRecordDto(
-                denunciaSalva.getId(),
-                new UsuarioRecordDto(denunciaSalva.getConselheiro().getId(), denunciaSalva.getConselheiro().getNome(), denunciaSalva.getConselheiro().getEmail()),
-                denunciaSalva.getDataEmissao(),
-                denunciaSalva.getRelato(),
-                denunciaSalva.getResponsaveis(),
-                denunciaSalva.getCriancasAdolescentes(),
-                denunciaSalva.getMedidasAplicadas(),
-                denunciaSalva.getOrigemDenuncia().toString(),
-                denunciaSalva.getStatusRD().toString()
-        );
+        return denunciaRepository.save(denuncia);
     }
 
     public List<Denuncia> buscarDenuncias() {
-        return denunciaRepository.findAll();
+        var denuncias = denunciaRepository.findAll();
+
+        if (denuncias.isEmpty()) {
+            throw new DenunciaNaoEncontradaException( "Nenhuma denuncia foi encontrada");
+        }
+        return denuncias;
     }
 
-    public RespostaDenunciaRecordDto buscarDenuncia(Long id) {
-        Denuncia denuncia = denunciaRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        return new RespostaDenunciaRecordDto(
-                denuncia.getId(),
-                new UsuarioRecordDto(denuncia.getConselheiro().getId(), denuncia.getConselheiro().getNome(), denuncia.getConselheiro().getEmail()),
-                denuncia.getDataEmissao(),
-                denuncia.getRelato(),
-                denuncia.getResponsaveis(),
-                denuncia.getCriancasAdolescentes(),
-                denuncia.getMedidasAplicadas(),
-                denuncia.getOrigemDenuncia().toString(),
-                denuncia.getStatusRD().toString()
-        );
+    public Denuncia buscarDenuncia(Long id) {
+        return denunciaRepository.findById(id).orElseThrow(() -> new DenunciaNaoEncontradaException(id));
     }
 
     @Transactional
     public void apagarDenuncia(Long id){
+        this.buscarDenuncia(id);
         denunciaRepository.deleteById(id);
     }
 
     @Transactional
-    public RespostaDenunciaRecordDto atualizarDenuncia(AtualizarDenunciaRecordDto denunciaRecordDto, Long id) {
-        Denuncia denuncia = denunciaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Denúncia não encontrada"));
+    public Denuncia atualizarDenuncia(RequestDenunciaDto denunciaRecordDto, Long id) {
+        System.out.println("no atualizar denuncia");
+        Denuncia denuncia = this.buscarDenuncia(id);
+
 
         denuncia.setDataEmissao(denunciaRecordDto.dataEmissao());
         denuncia.setRelato(denunciaRecordDto.relato());
@@ -92,17 +74,7 @@ public class DenunciaService {
         denuncia.setCriancasAdolescentes(denunciaRecordDto.criancasAdolescentes());
         denuncia.setMedidasAplicadas(denunciaRecordDto.medidasAplicadas());
 
-        Denuncia denunciaSalva = denunciaRepository.save(denuncia);
-        return new RespostaDenunciaRecordDto(
-                denunciaSalva.getId(),
-                new UsuarioRecordDto(denunciaSalva.getConselheiro().getId(), denunciaSalva.getConselheiro().getNome(), denunciaSalva.getConselheiro().getEmail()),
-                denunciaSalva.getDataEmissao(),
-                denunciaSalva.getRelato(),
-                denunciaSalva.getResponsaveis(),
-                denunciaSalva.getCriancasAdolescentes(),
-                denunciaSalva.getMedidasAplicadas(),
-                denunciaSalva.getOrigemDenuncia().toString(),
-                denunciaSalva.getStatusRD().toString()
-        );
+
+        return  denunciaRepository.save(denuncia);
     }
 }

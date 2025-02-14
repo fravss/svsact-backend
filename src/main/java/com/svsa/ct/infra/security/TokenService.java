@@ -2,8 +2,8 @@ package com.svsa.ct.infra.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTCreationException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
+
+import com.svsa.ct.exceptionsHandler.exceptions.infra.SecretNaoEncontradoException;
 import com.svsa.ct.model.Usuario;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,29 +19,32 @@ public class TokenService {
     private String secret;
 
     public String generateToken(Usuario usuario){
-        try{
+        if (secret == null) {
+            throw new SecretNaoEncontradoException();
+        }
             Algorithm algoritmo = Algorithm.HMAC256(secret);
-            String token = JWT.create()
-                    .withIssuer("svsact-api")
-                    .withSubject(usuario.getEmail())
-                    .withExpiresAt(genExpirationDate())
-                    .sign(algoritmo);
-            return token;
-        } catch (JWTCreationException exception) {
-            throw new RuntimeException("Error while generating token", exception);
-        }
+                return JWT.create()
+                        .withIssuer("svsact-api")
+                        .withSubject(usuario.getEmail())
+                        .withExpiresAt(genExpirationDate())
+                        .sign(algoritmo);
+
     }
+
     public String validateToken(String token){
-        try {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
-            return JWT.require(algorithm)
-                    .withIssuer("svsact-api")
-                    .build()
-                    .verify(token)
-                    .getSubject();
-        } catch (JWTVerificationException exception){
-            return "";
+
+        if (secret == null) {
+            throw new SecretNaoEncontradoException();
         }
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+
+                return JWT.require(algorithm)
+                        .withIssuer("svsact-api")
+                        .build()
+                        .verify(token)
+                        .getSubject();
+
+
     }
 
     private Instant genExpirationDate(){
