@@ -18,7 +18,7 @@ public class AutenticacaoService implements UserDetailsService {
         UserDetails usuario = usuarioRepository.findByEmail(email);
 
         if (usuario == null) {
-            throw new UsuarioNaoEncontradoException("Usuário com email " + email + " não encontrado");
+            throw new UsuarioNaoEncontradoException("Usuário não encontrado");
         } else {
             return usuario;
         }
