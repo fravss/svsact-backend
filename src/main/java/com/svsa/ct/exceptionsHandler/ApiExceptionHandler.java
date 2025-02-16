@@ -117,7 +117,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<?> AutenticacaoErrorHandler(AuthenticationException exception, WebRequest request){
-        return handleExceptionInternal(exception, "Usuário ou senha inválido",  new HttpHeaders(),
+        return handleExceptionInternal(exception, "Senha inválida",  new HttpHeaders(),
                 HttpStatus.UNAUTHORIZED, request);
     }
 
@@ -138,7 +138,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         String detail = String.format("O valor '%s' não é um valor válido para '%s'. ", valor , classe);
 
         return handleExceptionInternal(ex, detail ,  new HttpHeaders(),
-                HttpStatus.UNAUTHORIZED, request);
+                HttpStatus.BAD_REQUEST, request);
     }
 
 
