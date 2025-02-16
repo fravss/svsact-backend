@@ -3,8 +3,15 @@ package com.svsa.ct.controller;
 import com.svsa.ct.dtos.autenticacaoDtos.RequestLoginDto;
 import com.svsa.ct.dtos.autenticacaoDtos.ResponseLoginDto;
 
+import com.svsa.ct.exceptionsHandler.ExceptionMessage;
 import com.svsa.ct.infra.security.TokenService;
 import com.svsa.ct.model.Usuario;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +24,33 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
+@Tag(name = "Autenticação") // muda o nome da tag no swagger
 @Slf4j
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AutenticacaoController {
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
     private TokenService tokenService;
 
+
+    @Operation(summary = "Gerar o token de autenticação")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok", content = {@Content(mediaType = APPLICATION_JSON_VALUE, schema=
+             @Schema(implementation = ResponseLoginDto.class))}),
+             @ApiResponse(responseCode = "404", description = """
+        1. Usuário não encontrado.
+        2. Senha incorreta.
+        """, content = {
+                    @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class))}),
+            @ApiResponse(responseCode = "400", description = "Parametros inválidos", content = {
+                    @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class))}),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = {
+                    @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class))})
+    })
     @PostMapping("/login")
     public ResponseEntity autenticar(@RequestBody @Valid RequestLoginDto autenticacaoDto) {
 

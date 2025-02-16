@@ -42,12 +42,7 @@ public class DenunciaService {
     }
 
     public List<Denuncia> buscarDenuncias() {
-        var denuncias = denunciaRepository.findAll();
-
-        if (denuncias.isEmpty()) {
-            throw new DenunciaNaoEncontradaException( "Nenhuma denuncia foi encontrada");
-        }
-        return denuncias;
+          return denunciaRepository.findAll();
     }
 
     public Denuncia buscarDenuncia(Long id) {
