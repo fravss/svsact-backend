@@ -24,6 +24,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
@@ -116,8 +117,16 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<?> AutenticacaoErrorHandler(AuthenticationException exception, WebRequest request){
-        return handleExceptionInternal(exception, "Usuário ou senha inválido",  new HttpHeaders(),
+        return handleExceptionInternal(exception, "Senha inválida",  new HttpHeaders(),
                 HttpStatus.UNAUTHORIZED, request);
+    }
+
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<?> MethodArgumentTypeMismatchErrorHandler(MethodArgumentTypeMismatchException exception, WebRequest request){
+        String detail = String.format("O parametro '%s' recebeu o valor '%s', que não é compativel com o tipo '%s'", exception.getParameter().getParameterName(), exception.getValue(), exception.getRequiredType().getSimpleName());
+        return handleExceptionInternal(exception, detail,  new HttpHeaders(),
+                HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -129,7 +138,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         String detail = String.format("O valor '%s' não é um valor válido para '%s'. ", valor , classe);
 
         return handleExceptionInternal(ex, detail ,  new HttpHeaders(),
-                HttpStatus.UNAUTHORIZED, request);
+                HttpStatus.BAD_REQUEST, request);
     }
 
 

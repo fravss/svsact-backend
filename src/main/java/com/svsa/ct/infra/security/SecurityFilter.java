@@ -29,21 +29,16 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Qualifier("handlerExceptionResolver")
     private HandlerExceptionResolver resolver;
 
-    private static final List<String> EXCLUDED_PATHS = List.of("/auth/login"); // colocar as rotas nao protegidas aqui
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
           try {
 
-              String path = request.getRequestURI();
 
-              if (EXCLUDED_PATHS.contains(path)) {
-                  filterChain.doFilter(request, response);
-                  return;
-              }
               var token = this.recoverToken(request);
                if (token == null) {
-                   throw new TokenNaoEncontradoException();
+                   filterChain.doFilter(request, response);
+                   return;
                }
 
               var login = tokenService.validateToken(token);
