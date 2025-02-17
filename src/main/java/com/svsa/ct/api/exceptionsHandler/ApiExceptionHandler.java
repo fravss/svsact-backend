@@ -144,8 +144,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 
 
-
-
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
     public ResponseEntity<?> EntidadeNaoEncontradaExceptionHandler(EntidadeNaoEncontradaException exception, WebRequest request){
         return handleExceptionInternal(exception, exception.getMessage(),  new HttpHeaders(),

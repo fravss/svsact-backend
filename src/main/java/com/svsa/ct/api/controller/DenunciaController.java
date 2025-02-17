@@ -67,7 +67,7 @@ public class DenunciaController {
     @Operation(summary = "Retornar uma denuncia por id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok", content = {
-                    @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Denuncia.class))}),
+                    @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = DenunciaModel.class))}),
             @ApiResponse(responseCode = "400", description = "Não foi possível retornar denuncia pois o parametro 'id' da requisição é inválido", content = {
                     @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class))}),
             @ApiResponse(responseCode = "403", description = "O usuário não está autenticado", content = {
@@ -80,7 +80,6 @@ public class DenunciaController {
     @GetMapping("/{id}")
     public ResponseEntity<DenunciaModel> getDenunciaById(@Parameter(description = "ID de uma denuncia existente", example = "1", required = true) @PathVariable Long id) {
         Denuncia denuncia = denunciaService.buscarDenuncia(id);
-        denuncia.getConselheiro().setSenha(null);
         return ResponseEntity.status(HttpStatus.OK).body(modelMapper.map(denuncia, DenunciaModel.class));
     }
 

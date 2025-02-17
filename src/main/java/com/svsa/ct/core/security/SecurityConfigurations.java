@@ -34,13 +34,12 @@ public class SecurityConfigurations {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                            .requestMatchers(HttpMethod.POST, "/api/restricted/auth/login").permitAll()
-                           .requestMatchers(HttpMethod.POST, "/api/retricted/denuncia").hasRole("COORDENADORES")
+                        .requestMatchers(HttpMethod.POST, "/api/restricted/denuncia").hasRole("COORDENADORES")
                         .requestMatchers("/api/restricted/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-                 .build();
+                .build();
     }
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
