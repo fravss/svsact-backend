@@ -1,7 +1,6 @@
 package com.svsa.ct.dtos.Response;
 
 import com.svsa.ct.dtos.UsuarioModel;
-import com.svsa.ct.model.Usuario;
 import com.svsa.ct.model.enums.OrigemDenuncia;
 import com.svsa.ct.model.enums.StatusRD;
 
@@ -12,7 +11,7 @@ import java.util.Date;
 
 @Setter
 @Getter
-public class DenunciaResponse {
+public class DenunciaModel {
 
     private long id;
 

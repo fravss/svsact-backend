@@ -1,7 +1,6 @@
 package com.svsa.ct.controller;
 
-import com.svsa.ct.dtos.Request.DenunciaRequest;
-import com.svsa.ct.dtos.Response.DenunciaResponse;
+import com.svsa.ct.dtos.Response.DenunciaModel;
 import com.svsa.ct.exceptionsHandler.ExceptionMessage;
 import com.svsa.ct.model.Denuncia;
 import com.svsa.ct.model.Usuario;
@@ -18,7 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
@@ -54,11 +53,15 @@ public class DenunciaController {
                     @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class))})
     })
     @PostMapping
-    public ResponseEntity<DenunciaResponse> saveDenuncia( @RequestBody @Valid DenunciaRequest denunciaDto) {
+    public ResponseEntity<DenunciaModel> saveDenuncia(@RequestBody @Valid DenunciaModel denunciaDto) {
+
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Denuncia denuncia = denunciaService.saveDenuncia(denunciaDto, usuario);
-        denuncia.getConselheiro().setSenha(null);
-        return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(denuncia, DenunciaResponse.class));
+
+        Denuncia denuncia = modelMapper.map(denunciaDto, Denuncia.class);
+        denuncia.setConselheiro(usuario);
+        denuncia = denunciaService.saveDenuncia(denuncia);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(denuncia, DenunciaModel.class));
     }
 
     @Operation(summary = "Retornar uma denuncia por id")
@@ -75,16 +78,16 @@ public class DenunciaController {
                     @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class))})
     })
     @GetMapping("/{id}")
-    public ResponseEntity<DenunciaResponse> getDenunciaById(@Parameter(description = "ID de uma denuncia existente", example = "1", required = true) @PathVariable Long id) {
+    public ResponseEntity<DenunciaModel> getDenunciaById(@Parameter(description = "ID de uma denuncia existente", example = "1", required = true) @PathVariable Long id) {
         Denuncia denuncia = denunciaService.buscarDenuncia(id);
         denuncia.getConselheiro().setSenha(null);
-        return ResponseEntity.status(HttpStatus.OK).body(modelMapper.map(denuncia, DenunciaResponse.class));
+        return ResponseEntity.status(HttpStatus.OK).body(modelMapper.map(denuncia, DenunciaModel.class));
     }
 
     @Operation(summary = "Alterar denuncia associada a um id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok", content = {
-                    @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = DenunciaResponse.class))}),
+                    @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = DenunciaModel.class))}),
             @ApiResponse(responseCode = "400", description = "Não foi possível atualizar a  denuncia por conta de parametros inválidos", content = {
                     @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class))}),
             @ApiResponse(responseCode = "403", description = "O usuário não está autenticado", content = {
@@ -95,12 +98,16 @@ public class DenunciaController {
                     @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class))})
     })
     @PutMapping("/{id}")
-    public ResponseEntity<DenunciaResponse> atualizarDenuncia(@Parameter(description = "Representação uma denuncia", required = true)
-                                                              @RequestBody @Valid DenunciaRequest denunciaDto,
+    public ResponseEntity<DenunciaModel> atualizarDenuncia(@Parameter(description = "Representação uma denuncia", required = true)
+                                                              @RequestBody @Valid DenunciaModel denunciaDto,
                                                               @Parameter(description = "ID de uma denuncia existente", example = "1", required = true)
                                                               @PathVariable Long id) {
-        Denuncia denuncia = denunciaService.atualizarDenuncia(denunciaDto, id);
-        return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(denuncia, DenunciaResponse.class));
+
+        Denuncia denuncia = denunciaService.buscarDenuncia(id);
+        BeanUtils.copyProperties(denunciaDto, denuncia, "id");
+        denuncia = denunciaService.saveDenuncia(denuncia);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(denuncia, DenunciaModel.class));
 
     }
 
@@ -108,19 +115,19 @@ public class DenunciaController {
     @Operation(summary = "Retorna uma lista de todas as denuncias cadastradas")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de denúncias",
-                    content = @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = DenunciaResponse.class)))),
+                    content = @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = DenunciaModel.class)))),
             @ApiResponse(responseCode = "403", description = "O usuário não está autenticado", content = {
                     @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class))}),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = {
                     @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class))})
                })
     @GetMapping
-    public ResponseEntity<List<DenunciaResponse>> getDenuncias() {
+    public ResponseEntity<List<DenunciaModel>> getDenuncias() {
         List<Denuncia> denuncias = denunciaService.buscarDenuncias();
         denuncias.forEach(d -> d.getConselheiro().setSenha(null));
         return ResponseEntity.status(HttpStatus.OK).body(
                 denuncias.stream()
-                .map(denuncia -> modelMapper.map(denuncia, DenunciaResponse.class))
+                .map(denuncia -> modelMapper.map(denuncia, DenunciaModel.class))
                 .collect(Collectors.toList())
         );
     }

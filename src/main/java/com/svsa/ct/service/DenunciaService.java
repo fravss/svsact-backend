@@ -1,19 +1,15 @@
 package com.svsa.ct.service;
 
-import com.svsa.ct.dtos.Request.DenunciaRequest;
 
-
+import com.svsa.ct.dtos.Response.DenunciaModel;
 import com.svsa.ct.exceptionsHandler.exceptions.service.DenunciaNaoEncontradaException;
 
 import com.svsa.ct.model.Denuncia;
 
-import com.svsa.ct.model.Usuario;
-
-import com.svsa.ct.model.enums.OrigemDenuncia;
-import com.svsa.ct.model.enums.StatusRD;
 import com.svsa.ct.repository.DenunciaRepository;
 
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,20 +20,11 @@ public class DenunciaService {
     @Autowired
     private DenunciaRepository denunciaRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Transactional
-    public Denuncia saveDenuncia(DenunciaRequest denunciaRecordDto, Usuario usuario) {
-        Denuncia denuncia = new Denuncia();
-
-        denuncia.setDataEmissao(denunciaRecordDto.dataEmissao());
-        denuncia.setConselheiro(usuario);
-        denuncia.setRelato(denunciaRecordDto.relato());
-        denuncia.setStatusRD(StatusRD.valueOf(denunciaRecordDto.statusRD()));
-        denuncia.setOrigemDenuncia(OrigemDenuncia.valueOf(denunciaRecordDto.origemDenuncia()));
-        denuncia.setResponsaveis(denunciaRecordDto.responsaveis());
-        denuncia.setCriancasAdolescentes(denunciaRecordDto.criancasAdolescentes());
-        denuncia.setMedidasAplicadas(denunciaRecordDto.medidasAplicadas());
-
+    public Denuncia saveDenuncia(Denuncia denuncia) {
         return denunciaRepository.save(denuncia);
     }
 
@@ -55,21 +42,5 @@ public class DenunciaService {
         denunciaRepository.deleteById(id);
     }
 
-    @Transactional
-    public Denuncia atualizarDenuncia(DenunciaRequest denunciaRecordDto, Long id) {
-        System.out.println("no atualizar denuncia");
-        Denuncia denuncia = this.buscarDenuncia(id);
 
-
-        denuncia.setDataEmissao(denunciaRecordDto.dataEmissao());
-        denuncia.setRelato(denunciaRecordDto.relato());
-        denuncia.setStatusRD(StatusRD.valueOf(denunciaRecordDto.statusRD()));
-        denuncia.setOrigemDenuncia(OrigemDenuncia.valueOf(denunciaRecordDto.origemDenuncia()));
-        denuncia.setResponsaveis(denunciaRecordDto.responsaveis());
-        denuncia.setCriancasAdolescentes(denunciaRecordDto.criancasAdolescentes());
-        denuncia.setMedidasAplicadas(denunciaRecordDto.medidasAplicadas());
-
-
-        return  denunciaRepository.save(denuncia);
-    }
 }
