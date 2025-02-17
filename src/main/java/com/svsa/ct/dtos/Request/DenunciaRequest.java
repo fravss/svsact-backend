@@ -1,11 +1,11 @@
-package com.svsa.ct.dtos.denunciaDtos;
+package com.svsa.ct.dtos.Request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.Date;
 
-public record RequestDenunciaDto(
+public record DenunciaRequest(
                                 @NotNull Date dataEmissao,
                                 String relato,
                                 String responsaveis,

@@ -1,6 +1,6 @@
 package com.svsa.ct.service;
 
-import com.svsa.ct.dtos.denunciaDtos.RequestDenunciaDto;
+import com.svsa.ct.dtos.Request.DenunciaRequest;
 
 
 import com.svsa.ct.exceptionsHandler.exceptions.service.DenunciaNaoEncontradaException;
@@ -26,7 +26,7 @@ public class DenunciaService {
 
 
     @Transactional
-    public Denuncia saveDenuncia(RequestDenunciaDto denunciaRecordDto, Usuario usuario) {
+    public Denuncia saveDenuncia(DenunciaRequest denunciaRecordDto, Usuario usuario) {
         Denuncia denuncia = new Denuncia();
 
         denuncia.setDataEmissao(denunciaRecordDto.dataEmissao());
@@ -56,7 +56,7 @@ public class DenunciaService {
     }
 
     @Transactional
-    public Denuncia atualizarDenuncia(RequestDenunciaDto denunciaRecordDto, Long id) {
+    public Denuncia atualizarDenuncia(DenunciaRequest denunciaRecordDto, Long id) {
         System.out.println("no atualizar denuncia");
         Denuncia denuncia = this.buscarDenuncia(id);
 

@@ -1,6 +1,7 @@
 package com.svsa.ct.controller;
 
-import com.svsa.ct.dtos.denunciaDtos.RequestDenunciaDto;
+import com.svsa.ct.dtos.Request.DenunciaRequest;
+import com.svsa.ct.dtos.Response.DenunciaResponse;
 import com.svsa.ct.exceptionsHandler.ExceptionMessage;
 import com.svsa.ct.model.Denuncia;
 import com.svsa.ct.model.Usuario;
@@ -16,6 +17,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -33,7 +37,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping("/api/denuncia")
 public class DenunciaController {
     @Autowired //inject
-    DenunciaService denunciaService;
+    private DenunciaService denunciaService;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Operation(summary = "Criar nova denuncia")
     @ApiResponses(value = {
@@ -47,11 +54,11 @@ public class DenunciaController {
                     @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class))})
     })
     @PostMapping
-    public ResponseEntity<Denuncia> saveDenuncia( @RequestBody @Valid RequestDenunciaDto denunciaRecordDto) {
+    public ResponseEntity<DenunciaResponse> saveDenuncia( @RequestBody @Valid DenunciaRequest denunciaDto) {
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Denuncia denuncia = denunciaService.saveDenuncia(denunciaRecordDto, usuario);
+        Denuncia denuncia = denunciaService.saveDenuncia(denunciaDto, usuario);
         denuncia.getConselheiro().setSenha(null);
-        return ResponseEntity.status(HttpStatus.CREATED).body(denuncia);
+        return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(denuncia, DenunciaResponse.class));
     }
 
     @Operation(summary = "Retornar uma denuncia por id")
@@ -68,16 +75,16 @@ public class DenunciaController {
                     @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class))})
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Denuncia> getDenunciaById(@Parameter(description = "ID de uma denuncia existente", example = "1", required = true) @PathVariable Long id) {
+    public ResponseEntity<DenunciaResponse> getDenunciaById(@Parameter(description = "ID de uma denuncia existente", example = "1", required = true) @PathVariable Long id) {
         Denuncia denuncia = denunciaService.buscarDenuncia(id);
         denuncia.getConselheiro().setSenha(null);
-        return ResponseEntity.status(HttpStatus.OK).body(denuncia);
+        return ResponseEntity.status(HttpStatus.OK).body(modelMapper.map(denuncia, DenunciaResponse.class));
     }
 
     @Operation(summary = "Alterar denuncia associada a um id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok", content = {
-                    @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Denuncia.class))}),
+                    @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = DenunciaResponse.class))}),
             @ApiResponse(responseCode = "400", description = "Não foi possível atualizar a  denuncia por conta de parametros inválidos", content = {
                     @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class))}),
             @ApiResponse(responseCode = "403", description = "O usuário não está autenticado", content = {
@@ -88,10 +95,12 @@ public class DenunciaController {
                     @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class))})
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Denuncia> atualizarDenuncia(@Parameter(description = "Representação uma denuncia", required = true) @RequestBody @Valid RequestDenunciaDto denunciaRecordDto, @Parameter(description = "ID de uma denuncia existente", example = "1", required = true) @PathVariable Long id) {
-        Denuncia denuncia = denunciaService.atualizarDenuncia(denunciaRecordDto, id);
-        denuncia.getConselheiro().setSenha(null);
-        return ResponseEntity.status(HttpStatus.CREATED).body(denuncia);
+    public ResponseEntity<DenunciaResponse> atualizarDenuncia(@Parameter(description = "Representação uma denuncia", required = true)
+                                                              @RequestBody @Valid DenunciaRequest denunciaDto,
+                                                              @Parameter(description = "ID de uma denuncia existente", example = "1", required = true)
+                                                              @PathVariable Long id) {
+        Denuncia denuncia = denunciaService.atualizarDenuncia(denunciaDto, id);
+        return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(denuncia, DenunciaResponse.class));
 
     }
 
@@ -99,17 +108,21 @@ public class DenunciaController {
     @Operation(summary = "Retorna uma lista de todas as denuncias cadastradas")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de denúncias",
-                    content = @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = Denuncia.class)))),
+                    content = @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = DenunciaResponse.class)))),
             @ApiResponse(responseCode = "403", description = "O usuário não está autenticado", content = {
                     @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class))}),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = {
                     @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class))})
                })
     @GetMapping
-    public ResponseEntity<List<Denuncia>> getDenuncias() {
+    public ResponseEntity<List<DenunciaResponse>> getDenuncias() {
         List<Denuncia> denuncias = denunciaService.buscarDenuncias();
         denuncias.forEach(d -> d.getConselheiro().setSenha(null));
-        return ResponseEntity.status(HttpStatus.OK).body(denuncias);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                denuncias.stream()
+                .map(denuncia -> modelMapper.map(denuncia, DenunciaResponse.class))
+                .collect(Collectors.toList())
+        );
     }
 
     @Operation(summary = "Apagar denuncia por id")

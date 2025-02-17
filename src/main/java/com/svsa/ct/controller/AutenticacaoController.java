@@ -1,8 +1,8 @@
 package com.svsa.ct.controller;
 
-import com.svsa.ct.dtos.autenticacaoDtos.RequestLoginDto;
-import com.svsa.ct.dtos.autenticacaoDtos.ResponseLoginDto;
+import com.svsa.ct.dtos.Request.AutenticacaoRequest;
 
+import com.svsa.ct.dtos.Response.AutenticacaoResponse;
 import com.svsa.ct.exceptionsHandler.ExceptionMessage;
 import com.svsa.ct.infra.security.TokenService;
 import com.svsa.ct.model.Usuario;
@@ -33,14 +33,15 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class AutenticacaoController {
     @Autowired
     private AuthenticationManager authenticationManager;
+
     @Autowired
     private TokenService tokenService;
 
 
     @Operation(summary = "Gerar o token de autenticação")
-    @ApiResponses(value = {
+    @ApiResponses(value = { //CONFIGURAÇÕES DO SWAGGER
             @ApiResponse(responseCode = "200", description = "Ok", content = {@Content(mediaType = APPLICATION_JSON_VALUE, schema=
-             @Schema(implementation = ResponseLoginDto.class))}),
+             @Schema(implementation = AutenticacaoResponse.class))}),
              @ApiResponse(responseCode = "404", description = """
         1. Usuário não encontrado.
         2. Senha incorreta.
@@ -52,13 +53,13 @@ public class AutenticacaoController {
                     @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class))})
     })
     @PostMapping("/login")
-    public ResponseEntity autenticar(@RequestBody @Valid RequestLoginDto autenticacaoDto) {
+        public ResponseEntity autenticar(@RequestBody @Valid AutenticacaoRequest autenticacaoDto) {
 
-            var senhaDoUsuario = new UsernamePasswordAuthenticationToken(autenticacaoDto.email(), autenticacaoDto.senha());
+            var senhaDoUsuario = new UsernamePasswordAuthenticationToken(autenticacaoDto.getEmail(), autenticacaoDto.getSenha());
             var auth = this.authenticationManager.authenticate(senhaDoUsuario);
             var token = tokenService.generateToken((Usuario) auth.getPrincipal());
             log.info("Token gerado com sucesso: {}", token);
-            return ResponseEntity.ok(new ResponseLoginDto(token));
+            return ResponseEntity.ok(new AutenticacaoResponse(token));
 
     }
 }

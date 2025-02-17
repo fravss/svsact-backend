@@ -1,5 +1,6 @@
 package com.svsa.ct.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.svsa.ct.model.enums.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -26,6 +27,8 @@ public class Usuario implements Serializable, UserDetails {
 
     @Column(unique=true)
     private String email;
+
+
     private String senha;
 
     @Enumerated(EnumType.STRING)
