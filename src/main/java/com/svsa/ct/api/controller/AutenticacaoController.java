@@ -53,7 +53,7 @@ public class AutenticacaoController {
                     @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class))})
     })
     @PostMapping("/login")
-        public ResponseEntity autenticar(@RequestBody @Valid AutenticacaoRequest autenticacaoDto) {
+        public ResponseEntity<AutenticacaoResponse> autenticar(@RequestBody @Valid AutenticacaoRequest autenticacaoDto) {
 
             var senhaDoUsuario = new UsernamePasswordAuthenticationToken(autenticacaoDto.getEmail(), autenticacaoDto.getSenha());
             var auth = this.authenticationManager.authenticate(senhaDoUsuario);

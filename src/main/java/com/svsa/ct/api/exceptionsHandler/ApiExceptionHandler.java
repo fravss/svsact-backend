@@ -29,6 +29,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -124,7 +125,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<?> MethodArgumentTypeMismatchErrorHandler(MethodArgumentTypeMismatchException exception, WebRequest request){
-        String detail = String.format("O parametro '%s' recebeu o valor '%s', que não é compativel com o tipo '%s'", exception.getParameter().getParameterName(), exception.getValue(), exception.getRequiredType().getSimpleName());
+        String detail = String.format("O parametro '%s' recebeu o valor '%s', que não é compativel com o tipo '%s'", exception.getParameter().getParameterName(), exception.getValue(), Objects.requireNonNull(exception.getRequiredType()).getSimpleName());
         return handleExceptionInternal(exception, detail,  new HttpHeaders(),
                 HttpStatus.BAD_REQUEST, request);
     }
@@ -179,7 +180,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     private String joinPath(List<Reference> references) {
         return references.stream()
-                .map(ref -> ref.getFieldName())
+                .map(Reference::getFieldName)
                 .collect(Collectors.joining("."));
     }
 }

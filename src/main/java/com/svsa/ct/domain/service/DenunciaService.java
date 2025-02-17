@@ -8,7 +8,6 @@ import com.svsa.ct.domain.model.Denuncia;
 import com.svsa.ct.domain.repository.DenunciaRepository;
 
 import jakarta.transaction.Transactional;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +17,6 @@ import java.util.List;
 public class DenunciaService {
     @Autowired
     private DenunciaRepository denunciaRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
 
     @Transactional
     public Denuncia saveDenuncia(Denuncia denuncia) {
