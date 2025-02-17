@@ -37,13 +37,15 @@ public class SecurityFilter extends OncePerRequestFilter {
               var token = this.recoverToken(request);
                if (request.getRequestURI().startsWith("/api/restricted/") && token == null) {
                    throw new TokenNaoEncontradoException();
+               } else if(request.getRequestURI().startsWith("/api/restricted/") && token != null) {
+                   var login = tokenService.validateToken(token);
+                   UserDetails user = userRepository.findByEmail(login);
+
+                   var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                   SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
                }
-
-              var login = tokenService.validateToken(token);
-              UserDetails user = userRepository.findByEmail(login);
-
-              var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-              SecurityContextHolder.getContext().setAuthentication(authentication);
 
 
               filterChain.doFilter(request, response);
