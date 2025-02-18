@@ -38,6 +38,11 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler(EntidadeNaoEncontradaException.class)
+    public ResponseEntity<?> EntidadeNaoEncontradaExceptionHandler(EntidadeNaoEncontradaException exception, WebRequest request){
+        return handleExceptionInternal(exception, exception.getMessage(),  new HttpHeaders(),
+                HttpStatus.NOT_FOUND, request);
+    }
 
     @ExceptionHandler(JWTVerificationException.class)
     public ResponseEntity<?> JWTVerificationErrorHandler(JWTVerificationException exception, WebRequest request){
@@ -144,11 +149,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 
 
-    @ExceptionHandler(EntidadeNaoEncontradaException.class)
-    public ResponseEntity<?> EntidadeNaoEncontradaExceptionHandler(EntidadeNaoEncontradaException exception, WebRequest request){
-        return handleExceptionInternal(exception, exception.getMessage(),  new HttpHeaders(),
-              HttpStatus.NOT_FOUND, request);
-    }
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGenericException(Exception exception, WebRequest request) {

@@ -78,7 +78,7 @@ public class DenunciaController {
                     @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class))})
     })
     @GetMapping("/{id}")
-    public ResponseEntity<DenunciaModel> getDenunciaById(@Parameter(description = "ID de uma denuncia existente", example = "1", required = true) @PathVariable Long id) {
+    public ResponseEntity<DenunciaModel> getDenunciaById(@PathVariable Long id) {
         Denuncia denuncia = denunciaService.buscarDenuncia(id);
         return ResponseEntity.status(HttpStatus.OK).body(modelMapper.map(denuncia, DenunciaModel.class));
     }
