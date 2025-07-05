@@ -13,7 +13,7 @@ frontend: https://github.com/fravss/heroisfrontend
 ## Configuração
 
 1. Clone o repositório:
-git clone https://github.com/seuusuario/herois-backend.git
+git clone https://github.com/fravss/herois-backend.git
 cd herois-backend
 
 2. Configure o arquivo src/main/resources/application.properties com as informações do seu banco:
@@ -29,7 +29,7 @@ server.port=8080
 
 ### Via IDE
 - Importe o projeto como Maven.
-- Rode a classe principal com @SpringBootApplication (ex: HeroisApplication.java).
+- Rode a classe principal com @SpringBootApplication
 
 ### Via linha de comando
 - Compile e rode com Maven:
@@ -37,14 +37,6 @@ server.port=8080
 mvn clean install
 mvn spring-boot:run
 
-### Via JAR
-- Gere o JAR:
-
-mvn clean package
-
-- Execute o JAR:
-
-java -jar target/herois-backend.jar
 
 ## API Docs (Swagger)
 Se o projeto tiver Swagger configurado, acesse a documentação via:
